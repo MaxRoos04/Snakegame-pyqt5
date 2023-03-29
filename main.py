@@ -1,7 +1,7 @@
 import sys
 import random
 from PyQt5.QtCore import Qt, QPoint, QRect, QSize, QTimer
-from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
+from PyQt5.QtGui import QPainter, QColor, QBrush, QPen, QFont
 from PyQt5.QtWidgets import QApplication, QWidget
 
 
@@ -9,6 +9,7 @@ class Snake(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.score = 0
         self.initUI()
 
     def initUI(self):
@@ -33,6 +34,7 @@ class Snake(QWidget):
         self.draw_background(qp)
         self.draw_snake(qp)
         self.draw_food(qp)
+        self.draw_score(qp)
         qp.end()
     
     def draw_background(self, qp):
@@ -49,6 +51,11 @@ class Snake(QWidget):
         qp.setPen(QColor(0, 0, 0))
         qp.setBrush(QColor(255, 0, 0))
         qp.drawRect(QRect(self.food[0], self.food[1], 10, 10))
+    
+    def draw_score(self, qp):
+        qp.setPen(QColor(125, 125, 125))
+        qp.setFont(QFont('Arial', 10))
+        qp.drawText(QPoint(10, 20), 'Score: {}'.format(self.score))
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Right and self.direction != 'Left':
@@ -82,6 +89,9 @@ class Snake(QWidget):
     def create_food(self):
         x = round((random.randrange(0, 390) / 10)) * 10
         y = round((random.randrange(0, 290) / 10)) * 10
+
+        self.score += 10
+        
         return (x, y)
 
     def check_collision(self):
